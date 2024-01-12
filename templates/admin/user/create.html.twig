@@ -1,0 +1,6 @@
+{% extends 'admin/user/_layout.html.twig' %}
+
+{% block body %}
+    {% form_theme form with [' tailwind_2_layout.html.twig', _self] %}
+    {{ form(form) }}
+{% endblock %}
