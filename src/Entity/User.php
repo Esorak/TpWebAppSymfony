@@ -26,3 +26,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         # possible hashing algorithm (which currently is "bcrypt")
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 }
+
+class RegistrationController extends AbstractController
+{
+    public function index(UserPasswordHasherInterface $passwordHasher): Response
+    {
+        // ... e.g. get the user data from a registration form
+        $user = new User(...);
+        $plaintextPassword = ...;
+
+        // hash the password (based on the security.yaml config for the $user class)
+        $hashedPassword = $passwordHasher->hashPassword(
+            $user,
+            $plaintextPassword
+        );
+        $user->setPassword($hashedPassword);
+
+        // ...
+    }
+}
