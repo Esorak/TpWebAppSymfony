@@ -1,45 +1,33 @@
 security:
-    enable_authenticator_manager: true
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
-    password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-    providers:
-        users_in_memory: { memory: null }
-        # config/packages/security.yaml
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            lazy: true
-            provider: users_in_memory
+  # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+  # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+  providers:
+    users_in_memory:
+      memory:
+        users:
+          jojo@blublu.com: { password: '$2y$13$5NQG605Cej.bEIehOgcjHOdOrYh0dALXcR3/RReeYx2RVC3VZqfHO', roles: [ 'ROLE_ADMIN' ] }
+          blini@houmous.fr: { password: '$2y$13$6dCa1tgVYRtY3yR3mdk51.QRus8phz459lKtbcOBv1JurtXC8SoaG', roles: [ 'ROLE_USER' ] }
+          test@test.fr: { password: '$2y$13$1wM0iJN1nQ6FNJnfnXr4SuwE6Qxgm7s4ZQCebRTGpR9FaiT.zpxei', roles: [ 'ROLE_ADMIN' ] }
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+      
+    admin:
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+      pattern: ^/admin
+      lazy: false
+      provider: users_in_memory
+      form_login:
+        login_path: /admin/login
+        check_path: /admin/login_check
+        always_use_default_target_path: true
+        default_target_path: /admin/success
+    main:
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-
-when@test:
-    security:
-        password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+      lazy: true
+      pattern: ^/auth
+      provider: users_in_memory

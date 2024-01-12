@@ -1,47 +1,48 @@
-// src/Entity/User.php
+<?php
+
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
+    protected string $eMail;
+    protected string $password;
+    public function __construct()
     {
-    // ...
 
-    /**
-     * @return string the hashed password for this user
-     */
+    }
+
+
+
+    public function getEMail(): string
+    {
+        return $this->eMail;
+    }
+
     public function getPassword(): string
     {
         return $this->password;
     }
-}
-    password_hashers:
-        # Use native password hasher, which auto-selects and migrates the best
-        # possible hashing algorithm (which currently is "bcrypt")
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-}
 
-class RegistrationController extends AbstractController
-{
-    public function index(UserPasswordHasherInterface $passwordHasher): Response
+    public function getRoles(): array
     {
-        // ... e.g. get the user data from a registration form
-        $user = new User(...);
-        $plaintextPassword = ...;
-
-        // hash the password (based on the security.yaml config for the $user class)
-        $hashedPassword = $passwordHasher->hashPassword(
-            $user,
-            $plaintextPassword
-        );
-        $user->setPassword($hashedPassword);
-
-        // ...
+        // TODO: Implement getRoles() method.
+        return [] ;
     }
+
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
+        return;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->eMail ;
+    }
+
 }
